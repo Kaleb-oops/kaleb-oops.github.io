@@ -1,100 +1,94 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 	<meta charset="utf-8">
 	<title>Bouncing Box</title>
-	<script src="jquery.min.js"></script>
 	<style>
-		.box {
+		/* Set the board's background color */
+		#board {
+			position: relative;
+			height: 400px;
+			overflow: hidden;
+			background-color: #004d4d; /* Dark tealish */
+		}
+
+		#box {
 			width: 70px;
 			height: 70px;
 			background-color: teal;
 			font-size: 300%;
 			text-align: center;
-			user-select: none;
-			display: block;
 			position: absolute;
 			top: 100px;
-			/* Change me! */
 			left: 0px;
+			border-radius: 10px;
+			color: white;
+			line-height: 70px;
 		}
 
-		.board {
-			height: 100vh;
+		#scoreboard {
+			position: absolute;
+			top: 20px;
+			left: 20px;
+			font-size: 24px;
+			color: white;
 		}
 	</style>
-	<!-- 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
-
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 </head>
-
-<body class="board">
-	<!-- HTML for the box -->
-	<div class="box">?</div>
+<body id="board">
+	<div id="scoreboard">Score: 0</div>
+	<div id="box">0</div>
 
 	<script>
 		(function () {
-			'use strict'
-			/* global jQuery */
+			"use strict";
 
-			//////////////////////////////////////////////////////////////////
-			/////////////////// SETUP DO NOT DELETE //////////////////////////
-			//////////////////////////////////////////////////////////////////
+			var $box = $("#box");
+			var $board = $("#board");
+			var $scoreboard = $("#scoreboard");
 
-			var box = jQuery('.box');	// reference to the HTML .box element
-			var board = jQuery('.board');	// reference to the HTML .board element
-			var boardWidth = board.width();	// the maximum X-Coordinate of the screen
+			var boardWidth = $board.width();
+			var posX = 0; // Starting position
+			var speedX = 5; // Speed in the horizontal direction
+			var score = 0; // Score counter
 
-			// Every 50 milliseconds, call the update Function (see below)
-			setInterval(update, 50);
+			function moveBox() {
+				// Update position
+				posX += speedX;
 
-			// Every time the box is clicked, call the handleBoxClick Function (see below)
-			box.on('click', handleBoxClick);
+				// Bounce horizontally
+				if (posX + $box.width() > boardWidth || posX < 0) {
+					speedX = -speedX;
+				}
 
-			// moves the Box to a new position on the screen along the X-Axis
-			function moveBoxTo(newPositionX) {
-				box.css("left", newPositionX);
+				// Apply position
+				$box.css({ left: posX + "px" });
 			}
 
-			// changes the text displayed on the Box
-			function changeBoxText(newText) {
-				box.text(newText);
+			function getRandomColor() {
+				return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 			}
 
-			//////////////////////////////////////////////////////////////////
-			/////////////////// YOUR CODE BELOW HERE /////////////////////////
-			//////////////////////////////////////////////////////////////////
+			// Add click functionality
+			$box.on("click", function () {
+				score++; // Increment score
+				$scoreboard.text("Score: " + score); // Update scoreboard
+				$box.text(score); // Update box content to current score
 
-			// TODO 2 - Variable declarations 
+				// Reset position
+				posX = 0;
 
+				// Increase speed
+				speedX = speedX > 0 ? speedX + 2 : speedX - 2;
 
+				// Change box color
+				$box.css("background-color", getRandomColor());
+			});
 
-			/* 
-			This Function will be called 20 times/second. Each time it is called,
-			it should move the Box to a new location. If the box drifts off the screen
-			turn it around! 
-			*/
-			function update() {
-
-
-			};
-
-			/* 
-			This Function will be called each time the box is clicked. Each time it is called,
-			it should increase the points total, increase the speed, and move the box to
-			the left side of the screen.
-			*/
-			function handleBoxClick() {
-
-
-			};
-
-
-
-
-
+			// Move box every 20ms
+			setInterval(moveBox, 20);
 		})();
 	</script>
 </body>
-
 </html>
